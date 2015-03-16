@@ -1,0 +1,78 @@
+ul.dynatree-container
+{
+    font-size: 12px;
+    font-family: "Open Sans",Helvetica,Arial,sans-serif;
+    background-color: transparent;
+    padding: 0px;
+    border: none;
+    white-space: nowrap;
+    margin: 0px;
+    height: 100%;
+    overflow: hidden;
+}
+
+ul.dynatree-container ul {
+    padding: 0 0 0 16px;
+    margin: 0
+}
+
+ul.dynatree-container li span.dynatree-node {
+    line-height: 24px;
+    display: block
+}
+
+ul.dynatree-container li .dynatree-exp-e span.dynatree-expander,ul.dynatree-container li
+.dynatree-exp-ed span.dynatree-expander,ul.dynatree-container li
+.dynatree-expanded span.dynatree-expander {
+    background-position: 0 0
+}
+
+
+ul.dynatree-container li .dynatree-empty,ul.dynatree-container li .dynatree-vline,ul.dynatree-container li .dynatree-connector,ul.dynatree-container li .dynatree-expander,ul.dynatree-container li .dynatree-icon,ul.dynatree-container li .dynatree-checkbox,ul.dynatree-container li .dynatree-radio,ul.dynatree-container li .dynatree-drag-helper-img,ul.dynatree-container li #dynatree-drop-marker,.dropdown-menu>li.dropdown-submenu-toggle:after {
+    width: 12px;
+    height: 12px;
+    background-image: url(../icon/tree-icons-sprite.png);
+    opacity: 1;
+    vertical-align: text-top;
+    margin-left: 7px
+}
+
+ul.dynatree-container li span.dynatree-node .dynatree-expander,
+ul.dynatree-container li span.dynatree-node .dynatree-icon,
+ul.dynatree-container li span.dynatree-node .dynatree-connector{
+    margin-top: 1px;
+}
+
+ul.dynatree-container li span.dynatree-expander,.dropdown-menu>li.dropdown-submenu-toggle:after {
+    background-position: -14px 0;
+}
+
+ul.dynatree-container li span.dynatree-node.dynatree-folder .dynatree-icon {
+    background-position: -28px 0
+}
+
+ul.dynatree-container li span.dynatree-node .dynatree-icon {
+    background-position: -70px 0
+}
+
+.dynatree-loading span.dynatree-expander {
+    background-position: 0 0;
+    background-image: url(../assets/libs/jqueryplugins/dynatree/skin/loading.gif)
+}
+
+
+.dynatree-statusnode-wait span.dynatree-icon {
+    background-image: url(../assets/libs/jqueryplugins/dynatree/skin/loading.gif)
+}
+
+ul.dynatree-container li .dynatree-loading span.dynatree-expander {
+    background-image: url(../assets/libs/jqueryplugins/dynatree/skin/loading.gif)
+}
+
+.CodeMirror {
+    height: 100%;
+}
+
+.navbar .container-fluid .navbar-brand {
+    background-color: #3b3b3b;
+}

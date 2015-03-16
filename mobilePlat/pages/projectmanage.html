@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../resource/assets/libs/jquery-1.11.2.js"></script>
+    <script>
+        $(function(){
+
+            var restServiceBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8082";
+            $("#createProject").click(function(){
+                var pjName = $("#projectName").val();
+                var pjType = $("input[name='type']:checked").val()
+                $.ajax({
+                    url: restServiceBase + "/api/rest/project/create/" + pjType + "/" + pjName,
+                    method: "GET",
+                    dataType: "json",
+                    success: function(data){
+                        if(data.code == "success"){
+                            localStorage.setItem("openedProjectId", data.content);
+                            localStorage.setItem("openedProjectName", pjName);
+                            var a = $("<a href='index.html'>Apple</a>").get(0);
+                            var e = document.createEvent('MouseEvents');
+                            e.initEvent( 'click', true, true );
+                            a.dispatchEvent(e);
+                        }else{
+                            alert(data.content);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body style="font-size: 18px; font-family: sans-serif">
+    <div>
+        <div style="position: absolute;width:500px;height:90px; left:50%;  top:30%;  margin-left:-250px;  margin-top:-45px;border: solid 1px #ff0000; text-align: center">
+            <span style="font-size: 76px"><b>创建一个项目</b></span>
+        </div>
+        <div style="position: absolute;width:300px;height:90px; left:50%;  top:50%;  margin-left:-150px;  margin-top:-45px;">
+            <b>项目名称</b>：<input type="text" id = "projectName"><br><br>
+            <b>项目类型</b>：<input type="radio" name="type" value="phone">
+            <b>手机</b><input type="radio" name="type" value="tablet"><b>平板</b><br><br>
+            <input id = "createProject" type="button" style="width: 100;left:50%;  top:50%; margin-left: 85px" value="创建项目"><br>
+        </div>
+    </div>
+</body>
+</html>

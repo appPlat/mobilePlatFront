@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/ui/jquery-ui.css">
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/dynatree/skin/ui.dynatree.css">
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="../resource/styles/main.css">
+    <script type="text/javascript" src="../resource/assets/libs/jquery-1.11.2.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/dynatree/jquery.dynatree.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/codemirror/lib/codemirror.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/codemirror/mode/javascript/javascript.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/codemirror/mode/css/css.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/codemirror/mode/xml/xml.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/codemirror/addon/display/fullscreen.css">
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/codemirror/addon/display/fullscreen.js"></script>
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/codemirror/theme/night.css">
+    <link rel="stylesheet" href="../resource/styles/customtree.css">
+    <script type="text/javascript" src="../resource/assets/libs/baiduTemplate.js"></script>
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/layer/skin/layer.css">
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/layer/skin/layer.ext.css">
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/layer/layer.min.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/layer/extend/layer.ext.js"></script>
+    <script id="tabTemplate" type="text/html">
+        <% $("#main_tabs li").removeClass("active"); %>
+        <li class="active" style="display: block;" data-target="#<%=id%>" data-path="<%=path%>">
+            <a>
+                <span class="icon-info-source"></span>
+                <span class="tab-text"><%=title%></span>
+                <span class="custom-icon custom-icon-remove" title="关闭" data-path="<%=path%>"></span>
+            </a>
+        </li>
+    </script>
+    <script id="tabContentTemplat" type="text/html">
+        <% $("#main_tabcontents div.tab-pane").removeClass("active"); %>
+        <div class="tab-pane active" id="<%=id%>" data-path="<%=path%>">
+            <div class="source-editor code-editor">
+                <div class="toolbar"><pre>F11 - 全屏编辑  Ctrl-S - 保存文件  F5 - 刷新文件</pre></div>
+            </div>
+        </div>
+    </script>
+    <script>
+
+        var projectId = localStorage.getItem("openedProjectId");
+        var projectName = localStorage.getItem("openedProjectName");
+        var restServiceBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8082";
+        var projectServerBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8081/pubprojects/"+projectId;
+
+
+        var openedFiles = [];
+        var editingFiles = [];
+        var editorFileMap = {};
+
+        $(function() {
+
+            $("#panel-project-name").text(projectName);
+            /*   ----------------------------------------------左侧边框的伸缩和拖动  */
+            $("#project_panel").resizable({
+                maxWidth: 500,
+                minWidth: 220
+            });
+            $("#project_panel").resize(function(){
+               $("#main_tabs").css("margin-left",$("#project_panel").width()+2);
+            });
+
+            $("#hide-tree").click(function(){
+                $("#project_panel").toggleClass("panel-collapsed ui-resizable-disable ui-state-disable");
+                if($("#project_panel").hasClass("panel-collapsed")){
+                    $("#main_tabs").css("margin-left", "35px");
+                }else{
+                    $("#main_tabs").css("margin-left", $("#project_panel").width()+2);
+                }
+            });
+
+            /*  ----------------------------------------------项目源码树  */
+            $("#source_tree").dynatree({
+                    title: "SourceCode Tree",
+                    /* 树节点激活逻辑 */
+                    onActivate: function(node) {
+                        if(node.data.isFolder){
+                        }else{
+                            openNewTabAndContent(node.data.key, node.data.title);
+                        }
+                    },
+                    /* 懒加载节点逻辑 */
+                    onLazyRead: function(node) {
+                        var jsondata = {};
+                        jsondata.path = node.data.key;
+                        $.ajax({
+                            type:       "POST",
+                            url:        restServiceBase + "/api/rest/file/source/" + projectId + "/getsubfile",
+                            data:       JSON.stringify(jsondata),
+                            dataType:   "json" ,
+                            contentType: "application/json",
+                            success:    function(data){
+                                lazyLoadSub(node, data);
+                            }
+                        });
+                    }
+                }
+            );
+            /*  初始化树的根节点： 项目根目录*/
+            var rootNode = $("#source_tree").dynatree("getRoot");
+            var childNode = rootNode.addChild({
+                title: "项目根目录",
+                tooltip: "项目根目录",
+                isFolder: true,
+                isLazy: true,
+                expand: false,
+                key: "/"
+            });
+
+            /*  ----------------------------------------------tabs页事件绑定*/
+            $("#main_tabs ul").on('click', 'li', function(){
+                setTabAndContentVisiable($(this));
+                setTabAndContentActive($(this));
+                var path = $(this).data("path");
+                var fileContent = ajaxGetFileContent(path);
+                var editor = editorFileMap[path];
+                if(editor){
+                    editor.setValue(fileContent);
+                }
+            });
+
+            $("#main_tabs ul").on('click', 'span.custom-icon-remove', function(event){
+                event.stopPropagation();
+                var tab = $(this).parents("li");
+                closeTab(tab);
+            });
+
+            /* 如果tab是active的: 隐藏掉这个tab, 并把它旁边的tab设置为active，右侧优先
+             * 如果tab不是active的：直接隐藏掉这个tab */
+            function closeTab(tab){
+                if(tab.hasClass("active")){
+                    var tabSetActive = tab.nextAll("li:visible").first();
+                    if(0 == tabSetActive.length) {
+                        tabSetActive = tab.prevAll("li:visible").first();
+                    }
+                    if(0 != tabSetActive.length) {
+                        setTabAndContentVisiable(tabSetActive);
+                        setTabAndContentActive(tabSetActive)
+                    }else{
+                    }
+                }else{
+                    //do nothing
+                }
+                setTabAndContentInvisiable(tab);
+            }
+
+            function setTabAndContentInvisiable(tab){
+                tab.hide();
+                var targetContent = tab.data("target");
+                $(targetContent).removeClass("active");
+            }
+
+            function setTabAndContentVisiable(tab){
+                tab.show();
+                var targetContent = tab.data("target");
+                $("#main_tabcontents div.tab-pane").removeClass("active");
+                $(targetContent).addClass("active");
+                var path = tab.data("path");
+                setPreview(path);
+            }
+
+            function setTabAndContentActive(tab){
+                $("#main_tabs li").removeClass("active");
+                tab.addClass("active");
+            }
+
+            /*  ----------------------------------------------共用方法定义 */
+
+            /* 懒加载子节点 */
+            function lazyLoadSub(node, data) {
+                if(data.code == "success"){
+                    for(var i=0 ; i<data.content.length ; i++) {
+                        node.addChild({
+                            title: data.content[i].fileName,
+                            key: data.content[i].relativePath,
+                            isFolder : data.content[i].isFolder,
+                            isLazy: data.content[i].isFolder
+                        });
+                    }
+                }else{
+                    alert("获取目录文件失败，请稍后再试");
+                }
+            }
+
+            function getTabByFilePath(path){
+                return $("span.custom-icon-remove[data-path='"+ path +"']").parents("li");
+            }
+
+            /* 传入文件路径和文件名，创建(如果需要)显示相应tab和文件内容*/
+            function openNewTabAndContent(path, filename) {
+                var tab = getTabByFilePath(path);
+                var fileContent = ajaxGetFileContent(path);
+                if(tab.length == 0){
+                    var uuid = genUUID();
+                    createNewTabAndTabContent(filename, path, uuid);
+                    initCodeMirror(path,fileContent,uuid);
+                }else{
+                    setTabAndContentVisiable(tab);
+                    setTabAndContentActive(tab);
+                    if(isFileEditing(path)){
+                        //do nothing
+                    }else{
+                        // change codemirror content
+                        var editor = editorFileMap[path];
+                        if(editor){
+                            editor.setValue(fileContent);
+                        }
+                    }
+                }
+            }
+
+            /*  生成GUID */
+            function s4(){
+                return Math.floor((1+Math.random())*0x10000).toString(16).substring(0);
+            }
+            function genUUID(){
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+            }
+
+            /*  获取文件内容 */
+            function ajaxGetFileContent(path){
+                var jsondata = {};
+                var result;
+                jsondata.filePath = path;
+                $.ajax({
+                    url     : restServiceBase + "/api/rest/file/source/" + projectId + "/read",
+                    method  : "POST",
+                    data    : JSON.stringify(jsondata),
+                    dataType: "json",
+                    contentType: "application/json",
+                    async   : false,
+                    timeout : 10000,
+                    success : function(data){
+                        if(data.code == 'success'){
+                            result = data.content;
+                        }else{
+                            result =  "error";
+                        }
+                    }
+                });
+                return result;
+            }
+
+            $("#testbtn").click(function(){
+                refreshPreview();
+            });
+
+            /*  保存文件 */
+            function saveFileContent(path, content) {
+                var jsondata = {};
+                jsondata.filePath = path;
+                jsondata.fileContent = content;
+
+                $.ajax({
+                 'url'     : restServiceBase + "/api/rest/file/source/" + projectId + "/update",
+                 'data'    : JSON.stringify(jsondata),
+                 'type'    : "POST",
+                 'timeout' : 10000,
+                 'success' : function(data){
+                     if(data.code == 'success'){
+                         $("#saveFileText").text("保存文件");
+                         refreshPreview();
+                     }else{
+
+                     }
+                 },
+                 'dataType': "json",
+                 'contentType': "application/json"
+                 });
+            }
+
+            function initCodeMirror(path, fileContent, uuid){
+                var selector = "#" + uuid + "> div.source-editor";
+                var cmEditor = initACodeMirrorEditor($(selector), fileContent);
+                // 记录 文件路径--> codemirror 的映射
+                editorFileMap[path] = cmEditor;
+                setPreview(path);
+            }
+
+            /*  根据文件名称和文件路径，新建tab及其内容DOM节点 */
+            function createNewTabAndTabContent(filename, filepath, uuid) {
+                var tabData = {
+                    title : filename,
+                    path  : filepath,
+                    id    : uuid
+                }
+                var tabHtml = baidu.template('tabTemplate', tabData);
+                $("#main_tabs > ul").append(tabHtml);
+                var tabContentHtml = baidu.template('tabContentTemplat', tabData);
+                $("#main_tabs > div").append(tabContentHtml);
+            }
+
+            /*  根据path判断是否该文件已经打开tab页 */
+            function alreadyOpen(path) {
+                for(var i = 0 ; i < openedFiles.length ; i++){
+                    if(openedFiles[i] === path){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+
+            /*  根据path判断是否该文件是否被编辑过 */
+            function isFileEditing(path) {
+                for(var i = 0 ; i < editingFiles.length ; i++){
+                    if(editingFiles[i] === path){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+
+            /*  生成app */
+            $("#releaseApp").click(function(){
+                var loader = layer.load('正在生成APP..');
+                $.ajax({
+                   url :  restServiceBase + "/api/rest/project/build/" + projectId,
+                   method: "GET",
+                   dataType: "json",
+                   success: function(data){
+                       $("#releaseApp").text("生成APP");
+                       if(data.code == 'success'){
+                           layer.close(loader);
+                           var qrCodeUrl = data.content;
+                           console.log(qrCodeUrl);
+                           var apkUrl = qrCodeUrl.substring(35);
+                           $("#qrcontainer").append("<img src='" + qrCodeUrl + "'><br><div style='text-align: center'><a href='"+ apkUrl+"'>点击下载app</a></div>");
+                           $.layer({
+                               type : 1,
+                               title : "Android二维码下载",
+                               fix : false,
+                               shift:'top',
+                               offset:['50px' , ''],
+                               area : ['300px','370px'],
+                               page : {dom : '#qrcontainer'},
+                               end: function(){
+                                   $("#qrImage").attr("src", qrCodeUrl);
+                                   $("#qrcontainer").children().remove();
+                               }
+                           });
+                       }else{
+
+                       }
+                   }
+                });
+            });
+
+            $("#closeProject").click(function(){
+                var a = $("<a href='projectmanage.html'>Apple</a>").get(0);
+                var e = document.createEvent('MouseEvents');
+                e.initEvent( 'click', true, true );
+                a.dispatchEvent(e);
+            });
+
+
+            function setPreview(filePath) {
+                console.log(projectServerBase + filePath);
+                $("#previewframe").attr('src',projectServerBase + filePath + "?time=_" + Math.random());
+            }
+
+            function refreshPreview() {
+                $("#previewframe").attr('src',$("#previewframe").attr('src'));
+            }
+
+            /* -----------------------------------------------code mirror editor*/
+
+            var mixedMode = {
+                name: "htmlmixed",
+                scriptTypes: [{matches: /\/x-handlebars-template|\/x-mustache/i,
+                    mode: null},
+                    {matches: /(text|application)\/(x-)?vb(a|script)/i,
+                        mode: "vbscript"}]
+            };
+
+            function initACodeMirrorEditor(inWhich, content){
+                var myCodeMirror = CodeMirror(inWhich.get(0),{
+                    lineNumbers: true,
+                    mode:mixedMode,
+                    height:"100%",
+                    value: content,
+                    theme:"night"
+                });
+                myCodeMirror.setOption("extraKeys", {
+                   "F11" : function(cm) {
+                       if (cm.getOption("fullScreen")) {
+                           $("#main_tabs ul").show();
+                           $("#project_panel").show();
+                           cm.setOption("fullScreen", false)
+                       }else{
+                           $("#project_panel").hide();
+                           $("#main_tabs ul").hide();
+                           cm.setOption("fullScreen", true)
+                       }
+                   },
+                   "Ctrl-S": function(cm) {
+                       $("#saveFileText").text("正在保存..");
+                       var fileContent = cm.getValue();
+                       var filePath = $("#main_tabs li.active span.custom-icon-remove").data("path");
+                       saveFileContent(filePath, fileContent);
+                   }
+
+                });
+                return myCodeMirror;
+            }
+        });
+    </script>
+</head>
+
+<body>
+
+<div id="qrcontainer" style="display: none" ></div>
+<div class="body-container">
+    <div class="app-panel" id="app_panel">
+
+        <div class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="javascript: void(0);"></a>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-sm" title="返回项目列表" data-tiggzi-action="closeProject">
+                                <i class="custom-icon custom-icon-close"></i>
+                                <span class="title" id="closeProject">关闭项目</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-sm" title=" Ctrl+S" data-tiggzi-action="save"
+                               data-loading-text="<i class='custom-icon custom-icon-save'></i> Saving...">
+                                <i class="custom-icon custom-icon-save"></i>
+                                <span class="title" id="saveFileText">保存文件</span>
+                            </a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-sm" data-toggle="dropdown" title="Export">
+                                <i class="custom-icon custom-icon-export"></i>
+                                <span class="title" id="releaseApp">生成App</span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    Android
+                                </li>
+                                <li>
+                                    IOS
+                                </li>
+                                <li>
+                                    WPhone
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-links">
+                    <li class="external_buttons external_buttons-in-top-menu">
+                        <div class="btn-group">
+                            <a class="action-link" data-tiggzi-action="login" title="Login">
+                                登陆
+                            </a>
+                        </div>
+                    </li>
+                    <li class="external_buttons-in-dropdown-menu" style="display: none;">
+                        <div class="btn-group">
+                            <span class="action-link dropdown-toggle" data-toggle="dropdown">Backend Services</span>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a title="Login" data-tiggzi-action="login">登陆</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="app-content">
+        <div class="project-info ui-resizable" id="project_panel" aria-disabled="false" style="position: absolute; top: 0px; left: 0px;">
+            <!-- 头部，伸缩面板-->
+            <div class="panel-header" id="hide-tree">
+                <span class="panel-header-text" id="panel-project-name" style="text-align: center"></span>
+                <i class="custom-icon custom-icon-double-arrow-left"></i>
+            </div>
+
+            <!--项目树面板-->
+            <div class="project-inspector" id="project-inspector">
+                <!--项目面板头部-->
+                <div class="panel-top" id="project-panel-top"><input type="button" value="新建" style="width: 150px" id="testbtn"></div>
+                <!--源码tab-->
+                <ul class="nav nav-tabs project-tree-nav-tabs">
+                    <li class="active">
+                        <button class="project-tree-nav-tab btn btn-xs btn-switch">项目代码</button>
+                    </li>
+                </ul>
+                <!--源码tab内容-->
+                <div class="tab-content project-tree-tab-content">
+                    <div class="tab-pane active" id="source_tree">
+
+                    </div>
+                </div>
+            </div>
+            <span class="panel-collapsed-header-text"></span>
+            <div class="ui-resizable-handle ui-resizable-e" style="z-index: 1000;"></div>
+        </div>
+
+        <div class="project-content" id="main_tabs" style="margin-left: 246px;margin-right: 253px;">
+            <ul class="nav nav-tabs">
+
+            </ul>
+            <div class="tab-content" id="main_tabcontents">
+
+            </div>
+        </div>
+
+        <div class="project-info ui-resizable" style="right: 0px;top: 32px;">
+            <div class="panel-header" id="hide-preview">
+                <i class="custom-icon custom-icon-double-arrow-left" style="left: 10px;top: 10px;background-position: -92px -22px"></i>
+                <span class="panel-header-text" id="panel-preview" style="text-align: center"><b></b></span>
+            </div>
+            <iframe id = "previewframe" src="" style="width: 250px; height: 500px"></iframe>
+            <div>
+                <img style="width: 247px;height: 247px;" id = "qrImage" />
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
