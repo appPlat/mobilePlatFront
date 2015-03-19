@@ -322,7 +322,16 @@ function getSubFilesAndAddNodes(node){
     });
 }
 
+//----------------------------------------------------用户指导
 
+function adjust_fullbg_size(){
+    $("#fullbg").css({
+        height:$("body").height(),
+        width:$("body").width(),
+        display:"block"
+    });
+    $("#guide-code-app").css("left",$("body").width()/2-100);
+}
 
 $(function(){
     /*  ----------------------------------------------初始化项目源码树  */
@@ -356,6 +365,21 @@ $(function(){
         var tree = $("#source_tree").dynatree("getTree");
         var node = tree.getNodeByKey("/");
         node.expand();
+    }
+
+    function showUserGuid(){
+        if (localStorage.guideShowCount){
+            localStorage.guideShowCount=Number(localStorage.guideShowCount) +1;
+        }else{
+            localStorage.guideShowCount=1;
+        }
+
+        if(localStorage.guideShowCount==1){
+            adjust_fullbg_size();
+            $("#guide-generate-app").show();
+            $("#guide-show-app").show();
+            $("#guide-code-app").show();
+        }
     }
 
 //--------------------------------------------------------------------------事件绑定*/
@@ -413,12 +437,26 @@ $(function(){
     /*  启动预览*/
     $("#testApp").click(function(){
         testApp();
-    })
+    });
+
+    /* 窗口调整，用户指引遮罩位置调整 */
+    $(window).resize(function(){
+        adjust_fullbg_size();
+    });
+    /*  指引遮罩层点击绑定*/
+    $("#fullbg").click(function(){
+        $("#fullbg").hide();
+        $("#guide-generate-app").hide();
+        $("#guide-show-app").hide();
+        $("#guide-code-app").hide();
+    });
 
 //--------------------------------------------------------------------------页面显示数据初始化
     //项目名称
     $("#panel-project-name").text(projectName);
 
     initWorkspace();
+
+    showUserGuid();
 
 })
