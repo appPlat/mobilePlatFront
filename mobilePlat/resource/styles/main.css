@@ -16766,3 +16766,53 @@ body.angular .project-device .scrollable.iframe-cover:after,body.angular.ionic .
     background: 0 0;
     z-index: 10000
 }
+
+
+#fullbg {
+    background-color:Gray;
+    left:0px;
+    opacity:0.5;
+    position:absolute;
+    top:0px;
+    z-index:3;
+    filter:alpha(opacity=50); /* IE6 */
+    -moz-opacity:0.5; /* Mozilla */
+    -khtml-opacity:0.5; /* Safari */
+}
+#guide-generate-app {
+    background:url("../../resource/icon/guide-generate-app.png") no-repeat;
+    display:none;
+    height:159px;
+    width:240px;
+    margin:40px 0 0 380px;
+    padding:12px;
+    position:fixed !important; /* 浮动对话框 */
+    position:absolute;
+    z-index:5;
+}
+
+#guide-show-app {
+    background:url("../../resource/icon/guide-show-app.png") no-repeat;
+    display:none;
+    right:150px;
+    height:150px;
+    width:269px;
+    margin:250px 0 0 0px;
+    padding:12px;
+    position:fixed !important; /* 浮动对话框 */
+    position:fixed;
+    z-index:5;
+
+}
+
+#guide-code-app {
+    background:url("../../resource/icon/guide-code-app.png") no-repeat;
+    display:none;
+    top:300px;
+    padding:12px;
+    height:150px;
+    width:232px;
+    position:fixed !important; /* 浮动对话框 */
+    position:absolute;
+    z-index:5;
+}

@@ -30,7 +30,7 @@
                 <span class="icon-info-source"></span>
                 <span class="tab-text"><%=title%></span>
                 <span class="custom-icon custom-icon-remove" title="关闭" data-path="<%=path%>"></span>
-            </a>
+            </a>ll
         </li>
     </script>
     <script id="tabContentTemplat" type="text/html">
@@ -42,12 +42,10 @@
         </div>
     </script>
     <script>
-
         var projectId = localStorage.getItem("openedProjectId");
         var projectName = localStorage.getItem("openedProjectName");
-        var restServiceBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8082";
-        var projectServerBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8081/pubprojects/"+projectId;
-
+        var restServiceBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8081";
+        var projectServerBase = "http://cp01-rdqa-dev112.cp01.baidu.com:8079/pubprojects/"+projectId;
 
         var openedFiles = [];
         var editingFiles = [];
@@ -81,6 +79,7 @@
                     onActivate: function(node) {
                         if(node.data.isFolder){
                         }else{
+                            alert(node.data.key);
                             openNewTabAndContent(node.data.key, node.data.title);
                         }
                     },
@@ -413,9 +412,48 @@
             }
         });
     </script>
+    <script>
+        function adjust_fullbg_size(){
+            $("#fullbg").css({
+                height:$("body").height(),
+                width:$("body").width(),
+                display:"block"
+            });
+            $("#guide-code-app").css("left",$("body").width()/2-100);
+        }
+        $(function() {
+            if (localStorage.guideShowCount){
+                localStorage.guideShowCount=Number(localStorage.guideShowCount) +1;
+            }else{
+                localStorage.guideShowCount=1;
+            }
+
+            if(localStorage.guideShowCount==1){
+                adjust_fullbg_size();
+                $("#guide-generate-app").show();
+                $("#guide-show-app").show();
+                $("#guide-code-app").show();
+            }
+            $("#fullbg").click(function(){
+                $("#fullbg").hide();
+                $("#guide-generate-app").hide();
+                $("#guide-show-app").hide();
+                $("#guide-code-app").hide();
+            });
+            $(window).resize(function(){
+                adjust_fullbg_size();
+            });
+
+
+        })
+    </script>
 </head>
 
 <body>
+<div id="fullbg"></div>
+<div id="guide-generate-app"></div>
+<div id="guide-show-app"></div>
+<div id="guide-code-app"></div>
 
 <div id="qrcontainer" style="display: none" ></div>
 <div class="body-container">
