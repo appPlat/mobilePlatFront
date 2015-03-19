@@ -1,7 +1,5 @@
 @font-face {
     font-family: 'Open Sans';
-    src: url(fonts/opensans/OpenSans-Regular-webfont.eot);
-    src: url(fonts/opensans/OpenSans-Regular-webfont.eot?#iefix) format('embedded-opentype'),url(fonts/opensans/OpenSans-Regular-webfont.woff) format('woff'),url(fonts/opensans/OpenSans-Regular-webfont.ttf) format('truetype'),url(fonts/opensans/OpenSans-Regular-webfont.svg#OpenSansRegular) format('svg');
     font-weight: 400;
     font-weight: 400;
     font-style: normal
@@ -9,24 +7,18 @@
 
 @font-face {
     font-family: 'Open Sans';
-    src: url(fonts/opensans/OpenSans-Light-webfont.eot);
-    src: url(fonts/opensans/OpenSans-Light-webfont.eot?#iefix) format('embedded-opentype'),url(fonts/opensans/OpenSans-Light-webfont.woff) format('woff'),url(fonts/opensans/OpenSans-Light-webfont.ttf) format('truetype'),url(fonts/opensans/OpenSans-Light-webfont.svg#OpenSansLight) format('svg');
     font-weight: 200;
     font-style: normal
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url(fonts/opensans/OpenSans-Semibold-webfont.eot);
-    src: url(fonts/opensans/OpenSans-Semibold-webfont.eot?#iefix) format('embedded-opentype'),url(fonts/opensans/OpenSans-Semibold-webfont.woff) format('woff'),url(fonts/opensans/OpenSans-Semibold-webfont.ttf) format('truetype'),url(fonts/opensans/OpenSans-Semibold-webfont.svg#OpenSansSemibold) format('svg');
     font-weight: 500;
     font-style: normal
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url(fonts/opensans/OpenSans-Bold-webfont.eot);
-    src: url(fonts/opensans/OpenSans-Bold-webfont.eot?#iefix) format('embedded-opentype'),url(fonts/opensans/OpenSans-Bold-webfont.woff) format('woff'),url(fonts/opensans/OpenSans-Bold-webfont.ttf) format('truetype'),url(fonts/opensans/OpenSans-Bold-webfont.svg#OpenSansBold) format('svg');
     font-weight: 700;
     font-weight: 700;
     font-style: normal
@@ -8840,7 +8832,7 @@ a.thumbnail:hover,a.thumbnail:focus,a.thumbnail.active {
     margin: 0;
     height: 58px;
     width: 137px;
-    background: #2d2d2d url(../resources/assets/top_panel/appery-logo.png) no-repeat center center
+    background: #2d2d2d  no-repeat center center
 }
 
 
@@ -12632,6 +12624,12 @@ a,a:hover,a:link,a:active,label,input,button,select,textarea {
     width: 11px;
     height: 17px;
     background-position: -32px 0
+}
+
+.custom-icon-test {
+    width: 11px;
+    height: 17px;
+    background-position: -20px -18px
 }
 
 .custom-icon-help {

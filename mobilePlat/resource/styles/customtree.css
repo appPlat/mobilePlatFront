@@ -56,8 +56,7 @@ ul.dynatree-container li span.dynatree-node .dynatree-icon {
 }
 
 .dynatree-loading span.dynatree-expander {
-    background-position: 0 0;
-    background-image: url(../assets/libs/jqueryplugins/dynatree/skin/loading.gif)
+    background: url(../assets/libs/jqueryplugins/dynatree/skin/loading.gif) 0 0;
 }
 
 
@@ -75,4 +74,9 @@ ul.dynatree-container li .dynatree-loading span.dynatree-expander {
 
 .navbar .container-fluid .navbar-brand {
     background-color: #3b3b3b;
+}
+
+.project-inspector ul.project-tree-nav-tabs>li.active>.project-tree-nav-tab{
+    height: 26px;
+    width: 97px;
 }

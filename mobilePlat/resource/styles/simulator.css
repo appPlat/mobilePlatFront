@@ -1,0 +1,202 @@
+body{
+    font-family: 'Open Sans', Arial, Tahoma, sans-serif;
+    background-color: #2b2b2b;
+    margin: 0px;
+}
+
+#header{
+    background-color: #1c1c1c;
+    height: 70px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+#header .headwrapper{
+    height: 50px;
+    width: 1000px;
+    margin: auto;
+}
+
+#size_panel{
+    background-color: green;
+    margin-left: 100px;
+}
+
+#view_panel{
+    cursor: pointer;
+    position: relative;
+    float: right;
+    width: 120px;
+    height: 40px;
+    margin-right: 130px;
+    margin-top: 4px;
+    line-height: 37px;
+    color: #ffffff;
+}
+
+.sizebtn{
+    cursor: pointer;
+    background-color: #0000ff;
+    height: 40px;
+    width: 100px;
+    margin-left: 1px;
+    position: relative;
+    float: left;
+    margin-top: 4px;
+    color: #ffffff;
+    background-image: -webkit-linear-gradient(#444444, #393939 50%);
+    background-image:    -moz-linear-gradient(top, #444444,#393939);
+    background-image:     -ms-linear-gradient(top, #444444 0%, #393939 100%); /* IE10+ */
+    background-image:      -o-linear-gradient(top, #444444,#393939);
+    line-height: 37px;
+}
+
+#size_panel .active{
+    background: #0000ff;
+}
+
+.phone_link{
+    display: inline-block;
+    padding: 5px 0 5px 22px;
+    border-radius: 5px;
+    color: #FFFFFF;
+    text-decoration: none;
+    width: 178px;
+    line-height: 40px;
+    text-align: left;
+}
+
+.close {
+    background: transparent url(../icon/arrow-down.png) no-repeat;
+    background-position: 106px 23px;
+}
+
+
+
+.open {
+    background: transparent url(../icon/arrow-up.png) no-repeat;
+    background-position: 106px 23px;
+}
+
+.close_phone_content {
+    display: none;
+}
+
+.open_phone_content {
+    background-color: white;
+    border-radius: 0 0 5px 5px;
+    display: block;
+    margin-top: -1px;
+    width: 200px;
+    color: #666666;
+}
+
+.open_phone_content table {
+    text-align: center;
+    padding: 0 10px;
+}
+
+
+#frame.mobile {
+    border-radius: 35px;
+    -webkit-border-radius: 35px;
+    -moz-border-radius: 35px;
+    margin: auto;
+    position: relative;
+    margin-top: 40px;
+}
+
+/* MOBILE PORTRAIT */
+
+#frame.mobile.portrait {
+    width: 356px;     /* 320 + 17 + 17 external borders + 1*2 internal borders */
+    height: 586px;    /* 480 + 51 + 53 external borders + 1*2 internal borders */
+}
+
+#frame > div{
+    position: absolute;
+}
+
+#frame.mobile.portrait #frame_lt {
+    left: 0;
+    top: 0;
+    width: 35px;
+    height: 51px;
+    background: transparent url(../icon/frame_mobile_p_lt.png) no-repeat;
+}
+
+#frame.mobile.portrait #frame_mt {
+    left: 35px;
+    top: 0;
+    right: 35px;
+    height: 51px;
+    background: transparent url(../icon/frame_mobile_p_mt.png) repeat-x;
+}
+
+#frame.mobile.portrait #loud_speaker_h {
+    display: block;
+}
+
+#frame.mobile.portrait #frame_rt {
+    right: 0;
+    top: 0;
+    width: 35px;
+    height: 51px;
+    background: transparent url(../icon/frame_mobile_p_rt.png) no-repeat;
+}
+
+#frame.mobile.portrait #frame_lm {
+    left: 0;
+    top: 51px;
+    bottom: 53px;
+    width: 17px;
+    background: transparent url(../icon/frame_mobile_p_lm.png) repeat-y;
+}
+
+#frame.mobile.portrait #frame_mm {
+    top: 51px;
+    right: 17px;
+    bottom: 53px;
+    left: 17px;
+}
+
+#frame.mobile.portrait #frame_rm {
+    right: 0;
+    top: 51px;
+    bottom: 53px;
+    width: 17px;
+    background: transparent url(../icon/frame_mobile_p_rm.png) repeat-y;
+}
+
+#frame.mobile.portrait #loud_speaker_v {
+    display: none;
+}
+
+#frame.mobile.portrait #frame_lb {
+    left: 0;
+    bottom: 0;
+    width: 35px;
+    height: 53px;
+    background: transparent url(../icon/frame_mobile_p_lb.png) no-repeat;
+}
+
+#frame.mobile.portrait #frame_mb {
+    left: 35px;
+    bottom: 0;
+    right: 35px;
+    height: 53px;
+    background: transparent url(../icon/frame_mobile_p_mb.png) repeat-x;
+}
+
+#frame.mobile.portrait #frame_rb {
+    right: 0;
+    bottom: 0;
+    width: 35px;
+    height: 53px;
+    background: transparent url(../icon/frame_mobile_p_rb.png) no-repeat;
+}
+
+#frame_viewport{
+    width: 100%;
+    height: 100%;
+}

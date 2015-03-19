@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../resource/styles/simulator.css">
+    <script type="text/javascript" src="../resource/assets/libs/jquery-1.11.2.js"></script>
+    <script type="text/javascript" src="../resource/js/simulator.js"></script>
+    <title></title>
+</head>
+<body>
+    <div id = "header">
+        <div class="headwrapper">
+            <div id="size_panel">
+                <div data-size="240x320" class="sizebtn">240x320</div>
+                <div data-size="320x480" class="sizebtn active">320x480</div>
+                <div data-size="400x800" class="sizebtn">400x800</div>
+                <div data-size="480x800" class="sizebtn">480x800</div>
+                <div data-size="640x960" class="sizebtn">640x960</div>
+            </div>
+            <div id="view_panel">
+                <a id="view_on_phone_link" href="#" class="drop close phone_link">手机上查看</a>
+                <div id="dropdown_columns" class="close_phone_content">
+                    <table width="100%">
+                        <tbody><tr>
+                            <td>扫码查看</td>
+                        </tr>
+                        <tr>
+                            <td><img id="qrcode" width="150" height="150" src=""></td>
+                        </tr>
+                        </tbody></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="frame" class="mobile portrait" style="width: 356px; height: 586px;">
+        <div id="frame_lt"></div>
+        <div id="frame_lm"></div>
+        <div id="frame_lb"></div>
+        <div id="frame_mt">
+            <div id="loud_speaker_h"></div>
+        </div>
+        <div id="frame_mm">
+            <iframe id="frame_viewport" name="iframe_viewport" frameborder="0" scrolling="no" src="">
+                你的浏览器不支持iframe
+            </iframe>
+        </div>
+        <div id="frame_mb"></div>
+        <div id="frame_rt"></div>
+        <div id="frame_rm">
+            <div id="loud_speaker_v"></div>
+        </div>
+        <div id="frame_rb"></div>
+    </div>
+</body>
+</html>
