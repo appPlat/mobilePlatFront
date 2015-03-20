@@ -4133,7 +4133,7 @@ textarea.input-group-sm>.form-control,textarea.input-group-sm>.input-group-addon
 .navbar-brand {
     float: left;
     height: 58px;
-    background:url("../../resource/icon/logo.JPG") no-repeat;
+    background:url("../../resource/icon/logo.png") no-repeat;
 }
 
 .navbar-brand:hover,.navbar-brand:focus {
@@ -16784,7 +16784,7 @@ body.angular .project-device .scrollable.iframe-cover:after,body.angular.ionic .
     padding:12px;
     position:fixed !important; /* 浮动对话框 */
     position:absolute;
-    z-index:5;
+    z-index:200;
 }
 
 #guide-show-app {
@@ -16797,7 +16797,7 @@ body.angular .project-device .scrollable.iframe-cover:after,body.angular.ionic .
     padding:12px;
     position:fixed !important; /* 浮动对话框 */
     position:fixed;
-    z-index:5;
+    z-index:200;
 
 }
 
@@ -16810,5 +16810,5 @@ body.angular .project-device .scrollable.iframe-cover:after,body.angular.ionic .
     width:232px;
     position:fixed !important; /* 浮动对话框 */
     position:absolute;
-    z-index:5;
+    z-index:200;
 }

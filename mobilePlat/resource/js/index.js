@@ -168,9 +168,25 @@ function saveFileContent(path, content) {
     });
 }
 
+function stringEndWith(src, target){
+    if(target==null||target==""||src.length==0||target.length>src.length)
+        return false;
+    if(src.substring(src.length-target.length)==target)
+        return true;
+    else
+        return false;
+    return true;
+}
+
 function initCodeMirror(path, fileContent, uuid){
     var selector = "#" + uuid + "> div.source-editor";
-    var cmEditor = initACodeMirrorEditor($(selector), fileContent);
+    var cmEditor
+    if(stringEndWith(path, ".js")){
+        cmEditor = initACodeMirrorEditor($(selector), fileContent, "js");
+    }else{
+        cmEditor = initACodeMirrorEditor($(selector), fileContent, "htmlmix");
+    }
+
     // 记录 文件路径--> codemirror 的映射
     editorFileMap[path] = cmEditor;
     setPreview(path);
@@ -268,19 +284,22 @@ var mixedMode = {
     scriptTypes: [{matches: /\/x-handlebars-template|\/x-mustache/i,
         mode: null},
         {matches: /(text|application)\/(x-)?vb(a|script)/i,
-            mode: "vbscript"}]
+            mode: "javascript"}]
 };
 
-function initACodeMirrorEditor(inWhich, content){
+function initACodeMirrorEditor(inWhich, content,filetype){
     var myCodeMirror = CodeMirror(inWhich.get(0),{
         lineNumbers: true,
-        mode:mixedMode,
+        mode: filetype == 'js' ? "javascript" : mixedMode,
         height:"100%",
         value: content,
         theme:"night",
         autoCloseBrackets:true,
         autoCloseTags: true,
-        indentUnit:4
+        indentUnit:4,
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        lineWrapping: true
     });
     myCodeMirror.setOption("extraKeys", {
         "F11" : function(cm) {
@@ -300,8 +319,9 @@ function initACodeMirrorEditor(inWhich, content){
             var filePath = $("#main_tabs li.active span.custom-icon-remove").data("path");
             saveFileContent(filePath, fileContent);
         }
-
     });
+//    myCodeMirror.foldCode(CodeMirror.Pos(0, 0));
+    myCodeMirror.foldCode(CodeMirror.Pos(5, 0));
     return myCodeMirror;
 }
 
@@ -325,12 +345,14 @@ function getSubFilesAndAddNodes(node){
 //----------------------------------------------------用户指导
 
 function adjust_fullbg_size(){
-    $("#fullbg").css({
-        height:$("body").height(),
-        width:$("body").width(),
-        display:"block"
-    });
-    $("#guide-code-app").css("left",$("body").width()/2-100);
+    if(localStorage.guideShowCount==1) {
+        $("#fullbg").css({
+            height: $("body").height(),
+            width: $("body").width(),
+            display: "block"
+        });
+        $("#guide-code-app").css("left", $("body").width() / 2 - 100);
+    }
 }
 
 $(function(){
@@ -446,9 +468,11 @@ $(function(){
     /*  指引遮罩层点击绑定*/
     $("#fullbg").click(function(){
         $("#fullbg").hide();
+        $("#fullbg")
         $("#guide-generate-app").hide();
         $("#guide-show-app").hide();
         $("#guide-code-app").hide();
+        localStorage.guideShowCount=Number(localStorage.guideShowCount) +1;
     });
 
 //--------------------------------------------------------------------------页面显示数据初始化
