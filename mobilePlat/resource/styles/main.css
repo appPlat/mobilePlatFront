@@ -4132,10 +4132,8 @@ textarea.input-group-sm>.form-control,textarea.input-group-sm>.input-group-addon
 
 .navbar-brand {
     float: left;
-    padding: 20.5px 0;
-    font-size: 14px;
-    line-height: 17px;
-    height: 58px
+    height: 58px;
+    background:url("../../resource/icon/logo.JPG") no-repeat;
 }
 
 .navbar-brand:hover,.navbar-brand:focus {
