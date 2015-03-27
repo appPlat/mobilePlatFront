@@ -4,9 +4,14 @@
     <link rel="stylesheet" href="../resource/styles/simulator.css">
     <script type="text/javascript" src="../resource/assets/libs/jquery-1.11.2.js"></script>
     <script type="text/javascript" src="../resource/js/simulator.js"></script>
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/layer/skin/layer.css">
+    <link rel="stylesheet" href="../resource/assets/libs/jqueryplugins/layer/skin/layer.ext.css">
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/layer/layer.min.js"></script>
+    <script type="text/javascript" src="../resource/assets/libs/jqueryplugins/layer/extend/layer.ext.js"></script>
     <title></title>
 </head>
 <body>
+    <div id="qrcontainer" style="display: none" ></div>
     <div id = "header">
         <div class="headwrapper">
             <div id="size_panel">
@@ -16,7 +21,13 @@
                 <div data-size="480x800" class="sizebtn">480x800</div>
                 <div data-size="640x960" class="sizebtn">640x960</div>
             </div>
+
             <div id="view_panel">
+
+                <a data-toggle="dropdown" title="Export">
+                    <i class="custom-icon custom-icon-export"></i>
+                    <span class="title" id="releaseApp">生成App</span>
+                </a>
                 <a id="view_on_phone_link" href="#" class="drop close phone_link">手机上查看</a>
                 <div id="dropdown_columns" class="close_phone_content">
                     <table width="100%">

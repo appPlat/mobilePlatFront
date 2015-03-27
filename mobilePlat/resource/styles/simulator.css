@@ -26,9 +26,9 @@ body{
     cursor: pointer;
     position: relative;
     float: right;
-    width: 120px;
+    width: 251px;
     height: 40px;
-    margin-right: 130px;
+    margin-right: 0px;
     margin-top: 4px;
     line-height: 37px;
     color: #ffffff;
@@ -61,7 +61,7 @@ body{
     border-radius: 5px;
     color: #FFFFFF;
     text-decoration: none;
-    width: 178px;
+    width: 100px;
     line-height: 40px;
     text-align: left;
 }

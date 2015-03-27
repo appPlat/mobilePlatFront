@@ -63,7 +63,6 @@
 <div id="guide-show-app"></div>
 <div id="guide-code-app"></div>
 
-<div id="qrcontainer" style="display: none" ></div>
 <div class="body-container">
     <div class="app-panel" id="app_panel">
 
@@ -73,40 +72,11 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <div class="btn-group">
-                            <a class="btn btn-default btn-sm" title="返回项目列表" data-tiggzi-action="closeProject">
-                                <i class="custom-icon custom-icon-close"></i>
-                                <span class="title" id="closeProject">关闭项目</span>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="btn-group">
                             <a class="btn btn-default btn-sm" title=" Ctrl+S" data-tiggzi-action="save"
                                data-loading-text="<i class='custom-icon custom-icon-save'></i> Saving...">
                                 <i class="custom-icon custom-icon-save"></i>
-                                <span class="title" id="saveFileText">保存文件</span>
+                                <span class="title" id="saveFileText">保存修改</span>
                             </a>
-                        </div>
-                    </li>
-
-                    <li>
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-sm" data-toggle="dropdown" title="Export">
-                                <i class="custom-icon custom-icon-export"></i>
-                                <span class="title" id="releaseApp">生成App</span>
-                            </a>
-
-                            <ul class="dropdown-menu">
-                                <li>
-                                    Android
-                                </li>
-                                <li>
-                                    IOS
-                                </li>
-                                <li>
-                                    WPhone
-                                </li>
-                            </ul>
                         </div>
                     </li>
 
@@ -118,11 +88,17 @@
                             </a>
                         </div>
                     </li>
-
-
                 </ul>
-
-
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-sm" title="返回项目列表" data-tiggzi-action="closeProject">
+                                <i class="custom-icon custom-icon-close"></i>
+                                <span class="title" id="closeProject">关闭项目</span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -157,7 +133,7 @@
             <div class="ui-resizable-handle ui-resizable-e" style="z-index: 1000;"></div>
         </div>
 
-        <div class="project-content" id="main_tabs" style="margin-left: 246px;margin-right: 253px;">
+        <div class="project-content" id="main_tabs" style="margin-left: 246px">
             <ul class="nav nav-tabs">
 
             </ul>
@@ -166,16 +142,6 @@
             </div>
         </div>
 
-        <div class="project-info ui-resizable" style="right: 0px;top: 32px;">
-            <div class="panel-header" id="hide-preview">
-                <i class="custom-icon custom-icon-double-arrow-left" style="left: 10px;top: 10px;background-position: -92px -22px"></i>
-                <span class="panel-header-text" id="panel-preview" style="text-align: center"><b></b></span>
-            </div>
-            <iframe id = "previewframe" src="" style="width: 250px; height: 500px"></iframe>
-            <div>
-                <img style="width: 247px;height: 247px;" id = "qrImage" />
-            </div>
-        </div>
     </div>
 </div>
 </body>

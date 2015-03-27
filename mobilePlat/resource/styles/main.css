@@ -12815,6 +12815,7 @@ section.headered-section footer {
 }
 
 .body-container .app-content .project-content {
+    width: 100%;
     height: 100%;
     padding: 0;
     margin-left: 250px;

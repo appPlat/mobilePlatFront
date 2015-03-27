@@ -49,7 +49,6 @@ function setTabAndContentVisiable(tab){
     $("#main_tabcontents div.tab-pane").removeClass("active");
     $(targetContent).addClass("active");
     var path = tab.data("path");
-    setPreview(path);
 }
 
 function setTabAndContentActive(tab){
@@ -157,8 +156,7 @@ function saveFileContent(path, content) {
         'timeout' : 10000,
         'success' : function(data){
             if(data.code == 'success'){
-                $("#saveFileText").text("保存文件");
-                refreshPreview();
+                $("#saveFileText").text("保存修改");
             }else{
 
             }
@@ -189,7 +187,6 @@ function initCodeMirror(path, fileContent, uuid){
 
     // 记录 文件路径--> codemirror 的映射
     editorFileMap[path] = cmEditor;
-    setPreview(path);
 }
 
 /*  根据文件名称和文件路径，新建tab及其内容DOM节点 */
@@ -227,49 +224,6 @@ function isFileEditing(path) {
             return false;
         }
     }
-}
-
-function setPreview(filePath) {
-    console.log(projectServerBase + filePath);
-    $("#previewframe").attr('src',projectServerBase + filePath + "?time=_" + Math.random());
-}
-
-function refreshPreview() {
-    $("#previewframe").attr('src',$("#previewframe").attr('src') + "?_" + Math.random());
-}
-
-function generateApp(){
-    var loader = layer.load('正在生成APP..');
-    $.ajax({
-        url :  restServiceBase + "/api/rest/project/build/" + projectId,
-        method: "GET",
-        dataType: "json",
-        success: function(data){
-            $("#releaseApp").text("生成APP");
-            if(data.code == 'success'){
-                layer.close(loader);
-                var qrCodeUrl = data.content;
-                console.log(qrCodeUrl);
-                var apkUrl = qrCodeUrl.substring(35);
-                $("#qrcontainer").append("<img src='" + qrCodeUrl + "'><br><div style='text-align: center'><a href='"+ apkUrl+"'>点击下载app</a></div>");
-                $.layer({
-                    type : 1,
-                    title : "Android二维码下载",
-                    fix : false,
-                    shift:'top',
-                    offset:['50px' , ''],
-                    area : ['300px','370px'],
-                    page : {dom : '#qrcontainer'},
-                    end: function(){
-                        $("#qrImage").attr("src", qrCodeUrl);
-                        $("#qrcontainer").children().remove();
-                    }
-                });
-            }else{
-
-            }
-        }
-    });
 }
 
 function testApp(){
@@ -404,6 +358,31 @@ $(function(){
         }
     }
 
+    function newFileAndFolder(){
+        var top = $("#testbtn").offset().top + $("#testbtn").height + 10;
+        var left = 0;
+        $("#testbtn").attr('disabled','true');
+        var pageii = $.layer({
+            type: 1,
+            title: false,
+            area: ['auto', 'auto'],
+            border: [0], //去掉默认边框
+            shade: [0], //去掉遮罩
+            closeBtn: [0, false], //去掉默认关闭按钮
+            shift: 'top', //从左动画弹出,
+            page: {
+                html: '<div style="width:247px; height:400px; padding:20px; border:1px solid #ccc; background-color:#eee;">' +
+                    '<p>创建文件及目录功能，敬请期待</p>' +
+                    '<button id="pagebtn" class="btns" onclick="">关闭</button>' +
+                    '</div>'
+            }
+        });
+        $('#pagebtn').on('click', function(){
+            $("#testbtn").removeAttr('disabled');
+            layer.close(pageii);
+        });
+    }
+
 //--------------------------------------------------------------------------事件绑定*/
 
     /*左侧边框的伸缩和拖动  */
@@ -442,18 +421,16 @@ $(function(){
         closeTab(tab);
     });
 
-    /*  顶部操作事件*/
-    /*  生成app */
-    $("#releaseApp").click(function(){
-        generateApp();
-    });
-
     /*  关闭项目*/
     $("#closeProject").click(function(){
         var a = $("<a href='projectmanage.html'>Apple</a>").get(0);
         var e = document.createEvent('MouseEvents');
         e.initEvent( 'click', true, true );
         a.dispatchEvent(e);
+    });
+
+    $("#testbtn").click(function(){
+        newFileAndFolder();
     });
 
     /*  启动预览*/
