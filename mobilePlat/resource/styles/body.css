@@ -1,3 +1,6 @@
+body{
+    font: 0.8em "Lucida Sans Unicode", "Lucida Grande", Arial, Helvetica, sans-serif;
+}
 @-webkit-keyframes animate-cloud {
   from {
     background-position: 600px 100%;
